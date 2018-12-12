@@ -61,11 +61,11 @@ public class InsertTestData extends HttpServlet {
 		Thing thing = mapper.readValue(reader, Thing.class);
 		
 		//System.out.println(thing);
-		ThingDAO.insertThing(thing);
+		Thing returningThing = ThingDAO.insertThing(thing);
 		
 		//vrati ono sto je doslo u bazu da bi dobio id, vidi kako bi to islo
 		
-		String jsonData = mapper.writeValueAsString(thing);
+		String jsonData = mapper.writeValueAsString(returningThing);
 		response.setContentType("application/json");
 		response.getWriter().write(jsonData);
 		

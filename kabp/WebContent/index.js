@@ -17,8 +17,10 @@ function sendData(obj){
 	    	//console.log(errorThrown);
 	    	showError();
 	    	connectionLost = true;
+	    	return;
 	        
 	    }
+	    
 	});
 }
 
@@ -67,6 +69,7 @@ let connectionLost = false;
 let index = 0;
 
 document.getElementById("sendDataButton").addEventListener("click", function(){
+	connectionLost = false;
 	startSendingData();
 });
 
@@ -83,11 +86,11 @@ function startSendingData() {
         
         
     	startSendingData();
-    }, 1500);
+    }, 5000);
 }
 
 function showError(){
-	$("#errorHeading").append("Connection closed!");
+	$("#errorHeading").html("Connection closed!");
 }
 
 

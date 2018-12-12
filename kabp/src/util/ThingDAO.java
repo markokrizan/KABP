@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +45,7 @@ public class ThingDAO {
 		return things;
 	}
 	
-	public static boolean insertThing(Thing thing) {
+	public static Thing insertThing(Thing thing) {
 		
 		Connection conn = ConnectionManager.getConnection();
 		System.out.println("Connection: " + conn);
@@ -53,7 +54,7 @@ public class ThingDAO {
 		try {
 			String query = "INSERT INTO thing (thing_name, thing_date) VALUES (?, ?)";
 
-			pstmt = conn.prepareStatement(query);
+			pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		
 			System.out.println(thing.getName());
 			pstmt.setString(1, thing.getName());
@@ -65,7 +66,21 @@ public class ThingDAO {
 			
 			System.out.println(pstmt);
 			// izvrsavanje naredbe i prihvatanje rezultata (INSERT, UPDATE, DELETE), jednom za svaki SQL upit
-			return pstmt.executeUpdate() == 1;
+			pstmt.executeUpdate();
+			
+			ResultSet returnedKeys = pstmt.getGeneratedKeys();
+			if(returnedKeys.next()) {
+				Integer generatedId = returnedKeys.getInt(1);
+				thing.setId(generatedId);
+				
+			}
+			
+			
+		
+			return thing;
+			
+			
+			
 		} catch (SQLException ex) {
 			System.out.println("Greska u SQL upitu!");
 			ex.printStackTrace();
@@ -74,7 +89,7 @@ public class ThingDAO {
 			try {pstmt.close();} catch (SQLException ex1) {ex1.printStackTrace();}
 		}
 
-		return false;
+		return null;
 	}
 	
 	
